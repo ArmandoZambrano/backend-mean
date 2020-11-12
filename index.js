@@ -14,21 +14,18 @@ const app= express();
 //base de datos
 dbConnection();
 
-app.use(cors())
+app.use(cors());
+
+//Lectura y Parseo del body
+
+app.use(express.json());
  
 
 
 //Rutas
-app.get('/', (req, res )=> {
-    res.json({ 
-        ok:true,
-        msg: 'Hola Mundo'
-    })
-});
+app.use( '/api/usuarios', require('./routes/usuarios'));
+app.use( '/api/login' , require('./routes/auth'));
 
-app.get('/products/:id', function (req, res, next) {
-    res.json({msg: 'This is CORS-enabled for all origins!'})
-  })
 
 
 app.listen( process.env.PORT , ()=> {
