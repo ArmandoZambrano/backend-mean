@@ -36,7 +36,6 @@ router.put(
             [
                validarJWT,
                check('nombre', 'El nombre es obligatorio').not().isEmpty(),
-               check('email', 'El correo electronico es obligatorio').isEmail().normalizeEmail(),
                validarCampos
             ],  
             actualizarHospital
