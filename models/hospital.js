@@ -1,16 +1,28 @@
 
 const { Schema, model } = require("mongoose");
 
-const HospitalSchema = Schema({
+const EmpresaSchema = Schema({
 
-    nombre: {
+    nombreComercial: {
         type: String,
         required: true, 
         unique: true
 
     },
     
-    img: {
+    logo: {
+        type: String
+    },
+
+    razonSocial:{
+        type: String
+    },
+
+    rfc: {
+        type: String
+    },
+
+    regimenFiscal:{
         type: String
     },
 
@@ -48,15 +60,11 @@ const HospitalSchema = Schema({
        }
     },
 
-    numeroConsultorios : {
-        type: Number
-    },
-
-    numeroCamas: {
-        type: Number
-    },
-
     telefono:{
+        type: String
+    },
+
+    giro: {
         type: String
     },
 
