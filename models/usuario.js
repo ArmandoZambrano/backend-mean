@@ -3,7 +3,7 @@ const { Schema, model } = require("mongoose");
 
 const UsuarioSchema = Schema({
 
-    nombre: {
+    nombres: {
         type: String,
         required: true
 
@@ -19,6 +19,13 @@ const UsuarioSchema = Schema({
     },
 
     email: {
+        type: String,
+        unique: true,
+        required: true,
+         
+    },
+    
+    nickname: {
         type: String,
         unique: true,
         required: true,
@@ -63,11 +70,9 @@ const UsuarioSchema = Schema({
     ],
 
     activo: {
-        type: Boolean
+        type: Boolean,
+        default: true
     }
-
-
-
 
 });
 

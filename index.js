@@ -24,11 +24,12 @@ app.use(express.json());
 
 //Rutas
 app.use( '/api/usuarios', require('./routes/usuarios'));
-app.use( '/api/hospitales', require('./routes/hospitales'));
-app.use( '/api/medicos', require('./routes/medicos'));
+//app.use( '/api/hospitales', require('./routes/hospitales'));
+app.use('/api/empresas/', require ('./routes/empresas'));
+//app.use( '/api/medicos', require('./routes/medicos'));
 
 
-app.use( '/api/puestos' , require('./routes/puestos'));   //Controla las rutas para administrar los puestos 
+//app.use( '/api/puestos' , require('./routes/puestos'));   //Controla las rutas para administrar los puestos 
 
 app.use( '/api/login' , require('./routes/auth'));
 

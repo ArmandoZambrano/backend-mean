@@ -26,12 +26,7 @@ const EmpresaSchema = Schema({
         type: String
     },
 
-    usuario: {
-        type: Schema.Types.ObjectId,
-        ref: 'Usuario'
-    },
-
-    direccion: {
+    direccionFiscal: {
         calle: {
             type: String,
             required: true
@@ -82,14 +77,14 @@ const EmpresaSchema = Schema({
 
 },
 {
-    collection: 'hospitales'
+    collection: 'empresas'
 });
 
-HospitalSchema.method('toJSON', function() {
+EmpresaSchema.method('toJSON', function() {
     const {__v, ...object} = this.toObject();
     
     return object;
 })
 
-module.exports = model('Hospital', HospitalSchema);
+module.exports = model('Empresa', EmpresaSchema);
 

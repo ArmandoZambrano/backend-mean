@@ -1,63 +1,78 @@
 
 
 const { response, request } = require('express');
-const Usuario = require('../models/usuario');
-const Hospital = require('../models/hospital');
+
+const Empresas = require('../models/empresa');
+
 const bcryptjs = require('bcryptjs');
 const { generarJWT } = require('../helpers/jwt');
 
 
 
-const getHospitales = async( request, response ) => {
+const getEmpresas = async( request, response ) => {
 
-    const hospitales = await Hospital.find({}, 'nombre img usuario createAt updateAt');
+    const empresas = await Empresas.find({}, 'nombreComercial logo razonSocial regimenFiscal direccionFiscal telefono giro createAt updateAt');
 
     response.json({
         ok:true,
-        hospitales
+        empresas
     })
 
 }
 
-const crearHospital = async( request, response ) => {
+const getEmpresa = async( request, response ) => {
+
+    const uid = request.params.id;
+    
+    const empresa = await Empresas.findById( uid ,  'nombreComercial logo razonSocial regimenFiscal direccionFiscal telefono giro createAt updateAt');
+
+    response.json({
+        ok:true,
+        empresa
+    })
+
+}
+
+
+const crearEmpresa = async( request, response ) => {
 
     //recibir los parametros y deestructuramos los datos recibidos
-    const { nombre, img, usuario, direccion, telefono } = request.body;
+    const { nombreComercial, logo, razonSocial, rfc, regimenFiscal, direccionFiscal, telefono, giro } = request.body;
      
     
-    try{
+   try{
 
-        const hospital = new Hospital( request.body );
+        const empresa = new Empresas( request.body );
    
-        const existeHospital = await Hospital.findOne({nombre})
-        if( existeHospital ){
+        const existeEmpresa = await Empresas.findOne({rfc})
+        if( existeEmpresa ){
             return response.status(400).json({
                 ok: false,
-                msg: 'El Hospital ya ha sido registrado',
+                msg: 'El RFC ya esta registrado',
             });
         }
 
        
         //generar el insert
-        await hospital.save();
+        await empresa.save();
 
-        if (!hospital)
+        if (!empresa)
         {
             return response.status(400).json({
                 ok:false,
-                msg: "No se creo el hospital"
+                msg: "No se creo la empresa"
             });
         }
         
         return response.json({
                 ok:true,
-                msg: "Hospital Creado",
-                hospital
+                msg: "Empresa Creada",
+                empresa
                 });
                      
        
-    }catch (error){
-        
+   }catch (error){
+       
         return response.status(500).json({
             ok: false,
             msg: 'Error al generar la peticion',
@@ -71,44 +86,42 @@ const crearHospital = async( request, response ) => {
    
 }
 
-const actualizarHospital = async( request, response ) => {
+
+const actualizarEmpresa = async( request, response ) => {
 
     const id = request.params.id;
         
-    try{
+ try{
 
-        const hospital = await Hospital.findById( id );
-        if(!hospital){
-            response(404).json({
+  const empresa = await Empresas.findById( id );
+        if(!empresa){
+            return response.status(404).json({
                 ok:false,
-                msg: "No se encontro el hospital",
-                err });
+                msg: "No se encontro la empresa",
+            });
 
         }
 
         const campos = request.body;
-        
-        
         campos.updateAt = new Date();
-        console.log(campos);
-        
-        const actualizar = await Hospital.findByIdAndUpdate( {_id: id} , campos , { new:true });
+                
+        const actualizar = await Empresas.findByIdAndUpdate( {_id: id} , campos , { new:true });
         if(!actualizar)
         {
-            return response(404).json({
+            return response.status(404).json({
                         ok:false,
                         msg: "No se pudo actualizar correctamente",
-                        err 
                     });
         }else{
             return response.json({
                         ok: true,
-                        hospital: actualizar
+                        msg: "Empresa Actualizada",
+                        empresa: actualizar
                     });
         }
         
-
-     }catch (error){
+  }
+  catch (error){
         
         return response.status(500).json({
             ok: false,
@@ -120,31 +133,26 @@ const actualizarHospital = async( request, response ) => {
 }
 
 
-const borrarHospital = async( request, response ) => {
-
+const borrarEmpresa = async( request, response ) => {
         
     try{
         const id = request.params.id;
 
-        
-
-        const hospitalDB = await Hospital.findById( id );
-        if(!hospitalDB){
+        const empresa = await Empresas.findById( id );
+        if(!empresa){
             return response.status(400).json({
                 ok:false,
-                msg: 'Existe ningun hospital con ese id'
+                msg: 'Existe ninguna empresa con ese id'
             });
         }else{
             
-            await Hospital.findByIdAndDelete( id );
+            await Empresas.findByIdAndDelete( id );
             return response.status(200).json({
                 ok:true,
-                msg: "Hospital Eliminado",
+                msg: "Empresa Eliminada",
              });
 
         }
-
-            
     }catch (error){
         
         return response.status(500).json({
@@ -158,12 +166,16 @@ const borrarHospital = async( request, response ) => {
 }
 
 
-
 module.exports = {
 
-    getHospitales,
-    crearHospital,
+    getEmpresas,
+    getEmpresa,
+    crearEmpresa,
+    actualizarEmpresa,
+    borrarEmpresa,
+
+  /*  crearHospital,
     actualizarHospital,
-    borrarHospital,
+    borrarHospital,*/
 
 }

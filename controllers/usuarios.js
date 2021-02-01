@@ -9,7 +9,7 @@ const { generarJWT } = require('../helpers/jwt');
 
 const getUsuarios = async( request, response ) => {
 
-    const usuarios = await Usuario.find({}, 'nombre email role google createAt updateAt');
+    const usuarios = await Usuario.find({}, 'nombres apellidoPaterno apellidoMaterno email nickname img role google activo createAt updateAt');
 
     response.json({
         ok:true,
@@ -18,22 +18,46 @@ const getUsuarios = async( request, response ) => {
 
 }
 
+const getUsuario = async( request, response ) => {
+
+    const uid = request.params.id;
+
+    const usuario = await Usuario.findById( uid , 'nombres apellidoPaterno apellidoMaterno email nickname img role google activo createAt updateAt');
+
+    response.json({
+        ok:true,
+        usuario
+    })
+
+}
+
 const crearUsuario = async( request, response ) => {
 
     //recibir los parametros y deestructuramos los datos recibidos
-    const { email, password, nombre } = request.body;
+    const { nombres, apellidoPaterno, apellidoMaterno, email, nickname, password } = request.body;
      
     try{
 
         const usuario = new Usuario( request.body );
    
-        const existeEmail = await Usuario.findOne({email})
+        const existeEmail = await Usuario.findOne({email});
+        const existeNickname = await Usuario.findOne({nickname})
+        
         if( existeEmail ){
             return response.status(400).json({
                 ok: false,
                 msg: 'El correo ya esta registrado',
             });
         }
+
+        if( existeNickname ){
+            return response.status(400).json({
+                ok: false,
+                msg: 'El Nickname ya esta registrado',
+            });
+        }
+
+
 
         //encriptar contraseña
         const salt = bcryptjs.genSaltSync();
@@ -194,6 +218,7 @@ const borrarUsuario = async( request, response ) => {
 module.exports = {
 
     getUsuarios,
+    getUsuario,
     crearUsuario,
     actualizarUsuario,
     borrarUsuario,

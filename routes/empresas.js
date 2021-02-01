@@ -1,51 +1,61 @@
 
 /*
    Se almacenan todas las rutas de usuarios
-   Ruta: /api/hospitales
+   Ruta: /api/empresas 
 */
 const { Router } = require('express');
 const { check } = require('express-validator');
 const { validarCampos } = require('../middlewares/validar-campos');
 
-const {  getHospitales, crearHospital, actualizarHospital, borrarHospital } = require('../controllers/hospitales');
+const {  getEmpresas, getEmpresa, crearEmpresa, actualizarEmpresa, borrarEmpresa } = require('../controllers/empresas');
 const { validarJWT } = require('../middlewares/validar-jwt');
 
 
 const router = Router();
 
-
+//Listado de Empresas
 router.get( '/', 
             validarJWT, 
-            getHospitales 
+            getEmpresas 
          
             );
+
+//Devolver datos de una empresa
+router.get( '/:id', 
+            validarJWT, 
+            getEmpresa
+         
+            );
+
 
 router.post( 
                '/', 
                [
-                  check('nombre', 'El nombre es obligatorio').not().isEmpty(),
+                  check('nombreComercial', 'El nombre es obligatorio').not().isEmpty(),
+                  check('rfc', 'El RFC es obligatorio').not().isEmpty(),
                   validarCampos
                ], 
                validarJWT,
-               crearHospital 
+               crearEmpresa 
                
             );
+
 
 router.put( 
             '/:id',
             [
                validarJWT,
-               check('nombre', 'El nombre es obligatorio').not().isEmpty(),
+               check('rfc', 'El rfc es obligatorio').not().isEmpty(),
                validarCampos
             ],  
-            actualizarHospital
+            actualizarEmpresa
          
          );
 
 router.delete(
                '/:id',  
                validarJWT, 
-               borrarHospital
+               borrarEmpresa
                
             );
 

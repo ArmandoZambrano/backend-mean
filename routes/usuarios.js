@@ -6,18 +6,25 @@ const { Router } = require('express');
 const { check } = require('express-validator');
 const { validarCampos } = require('../middlewares/validar-campos');
 
-const { getUsuarios, crearUsuario, actualizarUsuario, borrarUsuario } = require('../controllers/usuarios');
+const { getUsuarios, getUsuario, crearUsuario, actualizarUsuario, borrarUsuario } = require('../controllers/usuarios');
 const { validarJWT } = require('../middlewares/validar-jwt');
 
 
 const router = Router();
 
-
+//Listado de Usuarios
 router.get('/', validarJWT, getUsuarios );
+
+//Regresa un usuario
+router.get('/:id', validarJWT, getUsuario );
+
+//Alta de Usuarios
 router.post( 
    '/', 
    [
-      check('nombre', 'El nombre es obligatorio').not().isEmpty(),
+      check('nombres', 'El nombre es obligatorio').not().isEmpty(),
+      check('apellidoPaterno', 'El Apellido Paterno es obligatorio').not().isEmpty(),
+      check('apellidoMaterno', 'El Apellido Materno es obligatorio').not().isEmpty(),
       check('password', 'la contraseña es obligatorio').not().isEmpty().isLength({ min: 8 }),
       check('email', 'El correo electronico es obligatorio').isEmail().normalizeEmail(),
       validarCampos
@@ -25,6 +32,7 @@ router.post(
    ], 
    crearUsuario );
 
+//Actualizacion de un Usuario
 router.put('/:id',
    [
       validarJWT,
@@ -34,6 +42,7 @@ router.put('/:id',
 
    ],  actualizarUsuario);
 
+//Eliminar un Usuario
 router.delete('/:id', validarJWT, borrarUsuario);
 
 
